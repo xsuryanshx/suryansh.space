@@ -57,13 +57,29 @@ export default function ContactPage() {
     setIsSubmitting(true)
     setSubmitStatus("idle")
 
-    // Simulate form submission (you can integrate with a service like Formspree, EmailJS, etc.)
-    setTimeout(() => {
+    try {
+      // Replace YOUR_FORM_ID with your actual Formspree form ID
+      // Sign up at https://formspree.io to get one
+      const response = await fetch("https://formspree.io/f/mgvbgvyo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        setSubmitStatus("success")
+        setFormData({ name: "", email: "", message: "" })
+        setTimeout(() => setSubmitStatus("idle"), 5000)
+      } else {
+        setSubmitStatus("error")
+      }
+    } catch (error) {
+      setSubmitStatus("error")
+    } finally {
       setIsSubmitting(false)
-      setSubmitStatus("success")
-      setFormData({ name: "", email: "", message: "" })
-      setTimeout(() => setSubmitStatus("idle"), 3000)
-    }, 1000)
+    }
   }
 
   const handleChange = (
