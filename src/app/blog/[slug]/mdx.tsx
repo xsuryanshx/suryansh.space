@@ -72,15 +72,20 @@ async function Pre({
       return <code {...props}>{children}</code>
     }
 
-    const html = await codeToHtml(String(codeElement?.props.children), {
-      lang,
-      themes: {
-        dark: "vesper",
-        light: "vitesse-light",
-      },
-    })
+    try {
+      const html = await codeToHtml(String(codeElement?.props.children), {
+        lang,
+        themes: {
+          dark: "vesper",
+          light: "vitesse-light",
+        },
+      })
 
-    return <div dangerouslySetInnerHTML={{ __html: html }} />
+      return <div dangerouslySetInnerHTML={{ __html: html }} />
+    } catch (error) {
+      console.error("Shiki error:", error)
+      return <pre {...props}>{children}</pre>
+    }
   }
 
   // If not, return the component as is

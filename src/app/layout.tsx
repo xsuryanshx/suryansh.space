@@ -1,29 +1,24 @@
 import type { Metadata } from "next"
-import { Geist_Mono } from "next/font/google"
+import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import { Navbar } from "../components/navbar"
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-mono",
-})
+import { ThemeProvider } from "./providers"
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.nexxel.dev"),
+  metadataBase: new URL("https://suryansh.space"),
   title: {
-    default: "Shoubhit Dash",
-    template: "%s | Shoubhit Dash",
+    default: "Suryansh Singh Rawat",
+    template: "%s | Suryansh Singh Rawat",
   },
-  description: "Developer, cardist and maker of things.",
+  description: "AI Engineer and Data Scientist. Building enterprise-grade RAG pipelines and scalable AI systems.",
   openGraph: {
-    title: "Shoubhit Dash",
-    description: "Developer, cardist and maker of things.",
-    url: "https://www.nexxel.dev",
-    siteName: "Shoubhit Dash",
+    title: "Suryansh Singh Rawat",
+    description: "AI Engineer and Data Scientist. Building enterprise-grade RAG pipelines and scalable AI systems.",
+    url: "https://suryansh.space",
+    siteName: "Suryansh Singh Rawat",
     locale: "en_US",
     type: "website",
-    images: ["https://www.nexxel.dev/og/home"],
+    images: ["https://suryansh.space/og/home"],
   },
   robots: {
     index: true,
@@ -33,9 +28,8 @@ export const metadata: Metadata = {
     "max-snippet": -1,
   },
   twitter: {
-    title: "Shoubhit Dash",
+    title: "Suryansh Singh Rawat",
     card: "summary_large_image",
-    creator: "@nexxeln",
   },
 }
 
@@ -47,12 +41,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistMono.variable} antialiased min-h-screen font-mono`}
+        className={`${GeistMono.variable} antialiased min-h-screen font-mono`}
       >
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <Navbar />
-          {children}
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <div className="max-w-4xl mx-auto px-4 py-8">
+            <Navbar />
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )

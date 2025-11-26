@@ -2,6 +2,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { ThemeToggle } from "./theme-toggle"
 
 export function Navbar() {
   const router = useRouter()
@@ -26,6 +27,9 @@ export function Navbar() {
           break
         case "p":
           router.push("/projects")
+          break
+        case "c":
+          router.push("/contact")
           break
       }
     }
@@ -56,7 +60,14 @@ export function Navbar() {
         >
           [p] projects
         </Link>
+        <Link
+          href="/contact"
+          className="hover:text-accent transition-colors duration-200"
+        >
+          [c] contact
+        </Link>
       </div>
+      <ThemeToggle />
     </nav>
   )
 }

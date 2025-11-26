@@ -4,104 +4,116 @@ import { Metadata } from "next"
 
 const projects = [
   {
-    title: "create-t3-app",
+    title: "openprobe",
     description:
-      "cli tool to bootstrap full-stack type-safe next.js applications",
-    role: "creator and maintainer",
-    period: "jun 2022 - present",
+      "an open-source deep research agent using python, langchain, and langgraph. designed to outperform existing search and research systems through advanced multi-hop reasoning capabilities.",
+    role: "creator",
+    period: "may 2025 - june 2025",
     achievements: [
-      "grew project to 24k+ github stars",
-      "wrote education blog posts with over 100k views",
-      "maintained comprehensive, up-to-date documentation",
+      "outperformed openai's gpt-4o-search on the FRAMES benchmark (+1.5% accuracy)",
+      "state-based orchestration of agents/tools like websearch, coding and logical reasoning via LangGraph.",
     ],
     technologies: [
+      "python",
+      "langgraph",
+      "agentic ai",
+      "lambda api",
       "typescript",
-      "next.js",
-      "trpc",
-      "prisma",
-      "tailwind css",
-      "auth.js",
+      "gemini api"
     ],
-    href: "https://create.t3.gg",
+    href: "https://github.com/Open-Probe/Open-Probe",
   },
   {
-    title: "mini-git",
-    description: "a simplified implementation of git built from scratch",
-    role: "creator",
-    period: "jul 2024",
-    achievements: [
-      "successfully implemented core git commands",
-      "implemented efficient blob storage and compression",
-      "learned about git's internal object model and data structures like merkle trees",
-    ],
-    technologies: ["go", "sha-1"],
-    href: "https://github.com/nexxeln/mini-git",
-  },
-  {
-    title: "license-generator",
-    description: "cli tool to create licenses for your projects",
-    role: "creator and maintainer",
-    period: "mar 2022 - present",
-    achievements: [
-      "grew project to over 3.2k downloads",
-      "built a robust cli interface with fuzzy search",
-      "added support for all github licenses with auto-filling",
-    ],
-    technologies: ["rust", "github api"],
-    href: "https://github.com/nexxeln/license-generator",
-  },
-  {
-    title: "spotify-voice-control",
-    description: "voice control for spotify through the terminal",
-    role: "creator",
-    period: "feb 2022",
-    achievements: [
-      "integrated spotify web api for seamless, real-time music control",
-      "built voice command system for comprehensive music control including playback, search, and playlist management",
-    ],
-    technologies: ["python", "spotify api"],
-    href: "https://github.com/nexxeln/spotify-voice-control",
-  },
-  {
-    title: "text2regex",
+    title: "PersonaAI",
     description:
-      "convert natural language text into validated regular expressions",
+      "Generate A/B variants for running digital campaigns with million ai generated personas.",
     role: "creator",
-    period: "jul 2024",
+    period: "Oct 2025",
     achievements: [
-      "implemented a self-correcting llm-powered regex generator",
-      "built a easy-to-use cli to generate regex patterns",
+      "Won 3rd place at the lovable.dev hackathon, created this in 6 hours.",
+      "Still in development, but will be released soon.",
     ],
-    technologies: ["typescript", "openai"],
-    href: "https://github.com/nexxeln/text2regex",
+    technologies: [
+      "python",
+      "microsoft phi-4",
+      "gemini api",
+      "typescript",
+      "lovable.dev",
+    ],
+    href: "https://personai.lovable.app/",
   },
   {
-    title: "fp_",
-    description: "a functional programming library for typescript",
-    role: "creator",
-    period: "feb 2023",
+    title: "Cognitive-Load",
+    description:
+      "Predicting cognitive load of users based on their behavior and interactions with their keyboard stroke data using machine learning models.",
+    role: "team",
+    period: "Nov 2025",
     achievements: [
-      "implemented a comprehensive set of functional programming constructs",
-      "wrote documentation and examples to help developers understand and use the library",
-      "published to deno package registry",
+      "Won 3rd place at the UW Databricks Hackathon, created this in 12 hours.",
+      "Utilized 136 million+ keyboard stroke data to train the machine learning models.",
     ],
-    technologies: ["typescript"],
-    href: "https://github.com/nexxeln/fp",
+    technologies: [
+      "python",
+      "pandas",
+      "numpy",
+      "scikit-learn",
+      "databricks",
+      "azure",
+      "azure ml",
+      "azure sql",
+    ],
+    href: "https://github.com/xsuryanshx/Cognitive-Load",
   },
+  {
+    title: "Detecting GAN Generated Deepfake Images",
+    description:
+      "research project focused on detecting gan-generated deepfake images using custom convolutional neural network architectures. achieved state-of-the-art performance on the stylegan dataset.",
+    role: "creator",
+    period: "jan 2021 - june 2021",
+    achievements: [
+      "achieved 97.77% accuracy on the StyleGAN dataset",
+      "designed custom cnn architecture optimized for deepfake detection",
+    ],
+    technologies: [
+      "python",
+      "tensorflow",
+      "keras",
+      "deep learning",
+      "cnn",
+      "computer vision",
+    ],
+    href: "https://github.com/xsuryanshx/Detecting-GAN-Generated-DeepFake-Images",
+  },
+  {
+    title: "Plant-FATE",
+    description:
+      "Plant-FATE is an eco-evolutionary vegetation model that accounts for multi-timescale adaptations of invdividual plants and plant species to the environment.",
+    role: "contributor",
+    period: "Jan 2022 - Aug 2022",
+    achievements: [
+      "Contributed to software development for the Plant-FATE simulation model, developed key modules in C++.",
+      "integrated forest patch models to simulate plant responses in climate variations, analyzed generated plots using R programming.",
+    ],
+    technologies: [
+      "C++",
+      "R",
+    ],
+    href: "https://github.com/xsuryanshx/Recommender-System",
+  }
 ]
 
 export default function ProjectsPage() {
   return (
     <main className="animate-fade-in-up">
-      <h1 className="text-4xl font-bold mb-8 text-white">
+      <h1 className="text-4xl font-bold mb-8 text-neutral-900 dark:text-white">
         <span className="text-accent mr-2">*</span>
         <ScrambleText text="projects" />
       </h1>
 
-      <p className="text-gray-400 mb-12 leading-relaxed">
-        here are some of the projects i&apos;ve worked on. i love building tools
-        that make developers&apos; lives easier and exploring new technologies
-        along the way.
+      <p className="text-neutral-600 dark:text-gray-400 mb-12 leading-relaxed">
+        here are some of the projects i&apos;ve worked on. i focus on building
+        ai systems and products that push the
+        boundaries of what&apos;s possible.
       </p>
 
       <div className="space-y-12">
@@ -115,11 +127,11 @@ export default function ProjectsPage() {
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Some of the projects I've worked on.",
+  description: "AI and deep learning projects I've worked on.",
   openGraph: {
     images: [
       {
-        url: "https://www.nexxel.dev/og/home?title=projects",
+        url: "https://suryansh.space/og/home?title=projects",
       },
     ],
   },

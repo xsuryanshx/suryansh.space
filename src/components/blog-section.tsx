@@ -12,7 +12,7 @@ const posts = getPosts()
 export function BlogSection() {
   return (
     <section className="mb-16 animate-fade-in-up">
-      <h2 className="text-2xl font-bold mb-6 flex items-center text-white">
+      <h2 className="text-2xl font-bold mb-6 flex items-center text-neutral-900 dark:text-white">
         <span className="text-accent mr-2">*</span>
         blog
       </h2>
@@ -21,11 +21,11 @@ export function BlogSection() {
           <div key={index} className="flex justify-between items-center group">
             <Link
               href={`/blog/${post.slug}`}
-              className="text-gray-200 hover:text-accent transition-colors duration-200"
+              className="text-neutral-700 dark:text-gray-200 hover:text-accent dark:hover:text-accent transition-colors duration-200"
             >
               {post.metadata.title.toLowerCase()}
             </Link>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-neutral-500 dark:text-gray-400">
               {formatDate(post.metadata.date)}
             </span>
           </div>

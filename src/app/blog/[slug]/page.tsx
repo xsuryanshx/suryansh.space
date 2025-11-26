@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: PageProps) {
       description: post.metadata.description,
       publishedTime,
       type: "article",
-      url: `https://www.nexxel.dev/blog/${post.slug}`,
+      url: `https://suryansh.space/blog/${post.slug}`,
       images: [
         {
-          url: `https://www.nexxel.dev/og/blog?title=${post.metadata.title}`,
+          url: `https://suryansh.space/og/blog?title=${post.metadata.title}`,
         },
       ],
     },
@@ -34,9 +34,8 @@ export async function generateMetadata({ params }: PageProps) {
       title: post.metadata.title,
       description: post.metadata.description,
       card: "summary_large_image",
-      creator: "@nexxeln",
       images: [
-        `https://www.nexxel.dev/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
+        `https://suryansh.space/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
       ],
     },
   }
@@ -62,28 +61,28 @@ export default async function Post({ params }: PageProps) {
             datePublished: post.metadata.date,
             dateModified: post.metadata.date,
             description: post.metadata.description,
-            image: `https://nexxel.dev/og/blog?title=${
+            image: `https://suryansh.space/og/blog?title=${
               post.metadata.title
             }&top=${formatDate(post.metadata.date)}`,
-            url: `https://nexxel.dev/blog/${post.slug}`,
+            url: `https://suryansh.space/blog/${post.slug}`,
             author: {
               "@type": "Person",
-              name: "Shoubhit Dash",
+              name: "Suryansh Singh Rawat",
             },
           }),
         }}
       />
 
-      <h1 className="text-4xl font-bold mb-4 text-white">
+      <h1 className="text-4xl font-bold mb-4 text-neutral-900 dark:text-white">
         <span className="text-accent mr-2">*</span>
         {post.metadata.title}
       </h1>
 
-      <div className="mb-8 flex items-center justify-between text-sm text-gray-400">
+      <div className="mb-8 flex items-center justify-between text-sm text-neutral-600 dark:text-gray-400">
         <span>{formatDate(post.metadata.date)}</span>
       </div>
 
-      <article className="prose prose-invert max-w-none prose-headings:text-white prose-a:text-white hover:prose-a:underline">
+      <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:text-neutral-900 dark:prose-headings:text-white prose-a:text-accent dark:prose-a:text-white hover:prose-a:underline prose-p:text-neutral-700 dark:prose-p:text-gray-300 prose-strong:text-neutral-900 dark:prose-strong:text-white prose-li:text-neutral-700 dark:prose-li:text-gray-300">
         <MDX source={post.content} />
       </article>
     </section>

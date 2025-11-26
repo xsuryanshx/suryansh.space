@@ -1,0 +1,263 @@
+---
+title: Scaling Transformer Inference
+description: A Deep Dive into Throughput, Latency, and Memory Optimization via K-V Caching
+date: 2025-11-25
+---
+
+# Scaling Transformer Inference: A Deep Dive into Throughput, Latency, and Memory Optimization via K-V Caching
+
+
+Large Language Models (LLMs) have shifted from a research novelty to a cornerstone of modern computing infrastructure. However, the autoregressive nature of these models presents significant challenges in inference, particularly regarding memory bandwidth and latency. This essay summarizes the technical background of Transformer inference, identifying the dichotomy between the compute-bound "prefill" phase and the memory-bound "decode" phase. It explores the bottleneck of Key-Value (KV) caching and analyzes novel solutions such as PagedAttention (vLLM) and Activation-Aware Quantization (AWQ) that mitigate these issues. Finally, it discusses personal findings regarding the convergence of systems engineering and ML, proposing future research directions in hardware-aware memory management.
+
+## 1. Introduction
+
+Large Language Models (LLMs) have rapidly become one of the most influential technologies in the artificial intelligence landscape, reshaping how individuals interact with information. Yet, behind every seemingly simple prompt lies a complex pipeline of computational logistics. As Moore’s Law suggests, gains in computational power have historically been exponential, but the parameter counts of modern models (spanning billions to trillions) have outpaced these hardware improvements.
+
+Early advancements in Deep Learning primarily focused on training—struggling with the cost and time required to produce a model. Over the past few years, major research labs and industry leaders have developed techniques that make training large-scale models more manageable. As the training bottleneck eased, a new equilibrium pressure emerged: **Inference**.
+
+The problem is no longer just "can we build it?"; it is "can we run it efficiently?" Recent estimates suggest that the processing cycle demand for inference is growing up to 10x faster than that of cloud training (Kwon et al., 2023).
+
+This essay examines the core challenges of modern AI systems, specifically focusing on two competing metrics:
+
+1. **Latency:** The time it takes to generate a single token for a specific user (critical for real-time chat).
+2. **Throughput:** The total number of tokens the system can generate per second across all users (critical for cost efficiency).
+
+## 2. Background: The Autoregressive Bottleneck
+
+To understand the inference challenge, one must look at the underlying architecture of the Transformer (Vaswani et al., 2017). Unlike traditional neural networks that might process an entire input at once, LLMs are **autoregressive**. They generate text one token at a time.
+
+To produce the 100th token, the model must essentially "re-read" or evaluate the context of all 99 previous tokens. If implemented naively, this leads to a quadratic computational cost `O(n²)` relative to the sequence length.
+
+### The "Naive" Inference Loop
+
+To visualize why this is slow, consider this Python pseudocode representing the standard generation loop without optimization:
+
+```
+def generate_naive(prompt, max_tokens):
+    tokens = tokenizer.encode(prompt)
+
+    for _ in range(max_tokens):
+        # Bottleneck: We re-process the ENTIRE sequence every time
+        # even though we only care about the new token.
+        # This function gets slower linearly as 'tokens' grows.
+        q, k, v = compute_attention(tokens)
+
+        next_token = sample(q, k, v)
+        tokens.append(next_token)
+
+    return tokenizer.decode(tokens)
+
+```
+
+In the code above, `compute_attention(tokens)` grows heavier with every step. To reduce this redundant computation, the industry standard is a technique known as **KV Caching**.
+
+### 2.1 The Two Phases of Inference: Prefill vs. Decode
+
+Before diving into caching, it is vital to distinguish the two distinct phases of generation, as they stress hardware differently:
+
+1. **Prefill Phase (Compute-Bound):** The model processes the user's input prompt (e.g., 500 words) all at once. This is a massive matrix multiplication operation that fully saturates the GPU's Compute Units (Tensor Cores). This determines the "Time to First Token" (TTFT).
+2. **Decode Phase (Memory-Bound):** The model generates the response one token at a time. Here, the GPU is mostly idle, waiting for data to travel from memory to the chip. This determines the "Time Per Output Token" (TPOT).
+
+Optimizations like KV Caching primarily target the **Decode Phase**.
+
+### 2.2 The Mechanism of KV Caching
+
+In the self-attention mechanism, the model computes three vectors for every token: a **Query (Q)**, a **Key (K)**, and a **Value (V)**. The attention score is derived from the dot product of the Query with the Keys, which is then used to weight the Values.
+
+**Attention(Q, K, V) = softmax(QK^T / √d_k) × V**
+
+When generating the next token, the Keys and Values for previous tokens do not change. Re-computing them is wasteful. Therefore, we cache these vectors in the GPU's High-Bandwidth Memory (VRAM).
+
+### Implementation View
+
+Here is how the logic changes with a KV Cache. We only compute the query for the *current* token, and append the new keys/values to our growing cache.
+
+```
+class KVCache:
+    def __init__(self):
+        self.k_cache = [] # Stores keys for previous tokens
+        self.v_cache = [] # Stores values for previous tokens
+
+    def update(self, new_k, new_v):
+        # We append only the new data, never re-computing old data
+        self.k_cache.append(new_k)
+        self.v_cache.append(new_v)
+        return self.k_cache, self.v_cache
+
+# The Optimized Loop
+cache = KVCache()
+for _ in range(max_tokens):
+    # Only compute Q, K, V for the ONE new token
+    q_new, k_new, v_new = compute_single_token(current_token)
+
+    # Retrieve history from memory, not compute
+    k_past, v_past = cache.update(k_new, v_new)
+
+    # Attention now only looks at the cached list + new token
+    next_token = attention(q_new, k_past, v_past)
+
+```
+
+While this reduces computational complexity, it moves the bottleneck to **Memory Capacity**. The `self.k_cache` list grows linearly. For long-context models (e.g., processing a 100-page document), this list becomes massive. For a 70B model with a 4096 token context, the KV cache alone can consume gigabytes of VRAM per user, causing the GPU to run out of memory (OOM).
+
+## 3. Technical Discussion: Findings on Memory Management
+
+### 3.1 The Problem of Contiguous Memory
+
+My research into the state-of-the-art prior to 2023 highlights a significant inefficiency in how Deep Learning frameworks (like PyTorch) handled memory. Systems like NVIDIA’s FasterTransformer or the original Orca paper (Yu et al., 2022) relied on **contiguous memory allocation**.
+
+Most tensor operations expect data to lie next to each other in physical memory to allow for fast vectorization. Because the length of an output response is unknown (a user might answer "Yes" or write a 2,000-word essay), these systems had to "reserve" a contiguous block of VRAM based on the *maximum possible* sequence length.
+
+This leads to **fragmentation**, similar to hard drive fragmentation in the 90s:
+
+1. **Internal Fragmentation:** If a slot is reserved for 2048 tokens but the user only generates 50, the remaining space is wasted.
+2. **External Fragmentation:** As requests of different sizes finish and release memory, the VRAM becomes a "checkerboard" of free and used space. A new large request might be rejected even if total free space is sufficient, simply because there is no single *continuous* gap large enough.
+
+Findings indicate that in these legacy systems, **20% to 80% of GPU memory was wasted** due to fragmentation.
+
+### 3.2 The Solution: PagedAttention (vLLM)
+
+The most novel idea introduced in recent literature is **PagedAttention**, popularized by the vLLM library developed by researchers at UC Berkeley (Kwon et al., 2023).
+
+### Conceptualizing PagedAttention
+
+Kwon et al. recognized that this was exactly the same problem Operating Systems faced in the 1960s regarding RAM usage. The solution then was **Virtual Memory Paging**. PagedAttention applies this to LLMs. Instead of demanding a contiguous block of physical memory, it divides the KV cache into fixed-size "blocks" (e.g., 16 tokens).
+
+We can visualize PagedAttention not as a contiguous array, but as a **Hash Map** (or Block Table) that maps a logical sequence to scattered physical locations. The Attention kernel is rewritten to "walk" this table, fetching blocks from wherever they exist in memory.
+
+```
+# Traditional Attention (Contiguous)
+# memory = [Tok1, Tok2, Tok3, Tok4, ..., Empty, Empty] (Must be one block)
+
+# PagedAttention (Non-Contiguous)
+# We can store chunks anywhere they fit, just like saving a file to a fragmented hard drive.
+physical_memory = {
+    "Block_A": [Tok1, Tok2],    # Stored at address 0x100
+    "Block_B": [Tok3, Tok4],    # Stored at address 0x900
+    "Block_C": [Tok5, ... ]     # Stored at address 0x200
+}
+
+# The Block Table acts as the "Translation Layer"
+block_table = {
+    "User_Request_1": ["Block_A", "Block_B", "Block_C"]
+}
+
+```
+
+**Key Advantages:**
+
+- **Zero Internal Fragmentation:** Memory is allocated on-demand, block by block. The only waste is the unused space in the very last partially-filled block.
+- **Memory Sharing (Copy-on-Write):** This is crucial for advanced decoding like **Beam Search** or **Parallel Sampling**. If a user asks a chatbot to "Generate three different emails," the system does not copy the prompt three times. All three requests point to `"Block_A"` and `"Block_B"` in the block table, only allocating new unique blocks when their generated outputs diverge.
+
+### 3.3 Quantization: Solving the Memory Wall
+
+Parallel to better memory management is the compression of the data itself. My review shows a significant shift from FP16 (16-bit floating point) to INT8 and even INT4 (4-bit integer) precision.
+
+### The "Memory Wall" Bottleneck: Arithmetic Intensity
+
+Why does file size matter for speed? It comes down to **Arithmetic Intensity**—the ratio of calculations (FLOPS) to memory traffic (Bytes).
+
+- **Training** has high arithmetic intensity (lots of math per byte loaded).
+- **Inference (Decode)** has low arithmetic intensity. We load a huge weight matrix just to multiply it by a tiny vector (the single new token).
+
+In modern GPUs (like the NVIDIA H100), compute power has increased vastly faster than memory bandwidth. The GPU spends most of its time *waiting* for data to arrive. Quantization attacks this directly. By reducing the weight size, we effectively increase the bandwidth.
+
+To illustrate the scale of savings, consider this back-of-the-envelope calculation for a **70 Billion Parameter Model**:
+
+```
+def calculate_vram(params_billions, precision_bits):
+    bytes_per_param = precision_bits / 8
+    total_gb = (params_billions * 1e9 * bytes_per_param) / 1e9
+    return total_gb
+
+# Standard FP16 (16-bit)
+vram_fp16 = calculate_vram(70, 16) # ~140 GB
+# (Requires expensive server-grade A100/H100 clusters)
+
+# Modern INT4 (4-bit)
+vram_int4 = calculate_vram(70, 4)  # ~35 GB
+# (Fits on a single high-end workstation card)
+
+```
+
+### Visualizing Quantization Code
+
+To understand what is actually happening to the numbers, consider this simulation of **Absmax Quantization**. We scale the weights into the range of -127 to +127 (INT8) to save space, then "de-quantize" them on the fly when we need to do the math.
+
+```
+import numpy as np
+
+def simulate_quantization(weights_fp16):
+    """
+    Simulates compressing weights from 16-bit float to 8-bit integer.
+    """
+    # 1. Find the maximum absolute value in the tensor
+    max_val = np.max(np.abs(weights_fp16))
+
+    # 2. Calculate the scale factor
+    # (We map the max_val to 127, the max value of an 8-bit integer)
+    scale = 127 / max_val
+
+    # 3. Quantize: Scale and round to nearest integer
+    weights_int8 = np.round(weights_fp16 * scale).astype(np.int8)
+
+    # This 'weights_int8' is what we store in VRAM (4x smaller!)
+    return weights_int8, scale
+
+def dequantize(weights_int8, scale):
+    # 4. De-quantize: Convert back to float for calculation
+    return weights_int8 / scale
+
+```
+
+[Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
+
+### **Conceptualizing Accuracy Preservation (AWQ)**
+
+A common concern is that "rounding down" numbers will make the model "dumber." Naive quantization (simply rounding every number) does indeed hurt performance. However, newer methods like **Activation-Aware Weight Quantization (AWQ)** use a smarter approach.
+
+Imagine a sentence where specific keywords carry 90% of the meaning, while articles like "the" or "a" carry very little. If you blur the articles, the sentence is still readable. If you blur the keywords, it becomes gibberish.
+
+AWQ identifies that in a neural network, not all weights are equal. Approximately 1% of the weights are "salient" (crucial) because they interact with large activation values. AWQ protects this 1% by keeping them in higher precision or scaling them specifically to preserve their information, while aggressively compressing the other 99%. This allows for massive speedups and memory savings with negligible loss in the model's intelligence.
+
+## 4. Personal Interest and Critical Analysis
+
+What I find most compelling about this subject is not the AI "magic" of generating text, but the **systems engineering** required to support it. We are currently witnessing a convergence of classical OS principles and modern AI.
+
+The realization that the bottleneck for AI is no longer "compute" (FLOPS) but "memory bandwidth" changes how we must approach optimization. It is fascinating that the solution to running a futuristic neural network (PagedAttention) was found by looking back at the design of the DEC PDP-10 and early virtual memory systems from the 1960s.
+
+This creates a "Leaky Abstraction." Ideally, an ML engineer shouldn't need to know how GPU memory paging works. However, to deploy efficient systems today, one must understand the hardware deeply. I am particularly interested in the trade-off between **Post-Training Quantization (PTQ)** and **throughput**. While PTQ reduces memory, decoding compressed weights on the fly adds computational overhead. The balance between compute-bound and memory-bound operations is delicate and varies across hardware generations (e.g., NVIDIA A100 vs. H100).
+
+## **5. Future Directions and Next Steps**
+
+Based on this review, the path forward for Transformer inference involves three key areas of research and application:
+
+1. **Speculative Decoding:**
+    - *Concept:* In many sentences, the next word is obvious (e.g., "New York [City]"). Using a massive 70B model to predict "City" is a waste. Speculative Decoding uses a tiny, fast "Draft Model" to generate 5-10 tokens cheaply, and then the large "Target Model" verifies them all in a single parallel step.
+    - *Next Step:* I plan to benchmark how PagedAttention integrates with Speculative Decoding. Since speculative decoding requires managing multiple "potential" future sequences (a tree of possibilities), the flexible memory management of vLLM should theoretically provide massive gains here.
+    
+    [Faster LLMs: Accelerate Inference with Speculative Decoding](https://www.youtube.com/watch?v=VkWlLSTdHs8)
+    
+2. **Long-Context Optimization (Ring Attention):**
+    - *Concept:* As context windows grow to 1M+ tokens (e.g., Gemini 1.5), even PagedAttention struggles with the sheer volume of KV cache. Ring Attention distributes the KV cache across multiple GPUs in a ring topology, allowing the context to be larger than the memory of any single card.
+    - *Next Step:* Investigating the latency penalties introduced by inter-GPU communication in Ring Attention setups compared to single-node quantization.
+
+## 6. Conclusion
+
+The deployment of Large Language Models is a multi-faceted challenge where algorithm design meets hardware reality. While the Transformer architecture provided the reasoning capability, techniques like KV Caching, PagedAttention, and advanced Quantization are what make these models viable products.
+
+Optimizing inference is not merely about cost-cutting; it is the enabling factor that determines whether an AI model can be a real-time assistant or just a batched offline process. As models continue to scale, the "software" of memory management will arguably become just as critical as the "hardware" of the GPUs themselves.
+
+## **7. References**
+
+[1] Kwon, W., et al. (2023). "Efficient Memory Management for Large Language Model Serving with PagedAttention." SOSP.
+
+[2] Vaswani, A., et al. (2017). "Attention Is All You Need." NeurIPS.
+
+[3] Yu, G., et al. (2022). "Orca: A Distributed Serving System for Transformer-Based Generative Models." OSDI.
+
+[4] NVIDIA Technical Blog. "Deploying LLMs with TensorRT-LLM."
+
+[5] Frantar, E., et al. (2023). "GPTQ: Accurate Post-Training Quantization for Generative Pre-trained Transformers."
+
+[6] Hao Liu, Matei Zaharia, and Pieter Abbeel. (2023). “Ring attention with blockwise transformers for near-infinite context.”

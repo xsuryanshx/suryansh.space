@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 :root {
+  --background: #ffffff;
+  --foreground: #111111;
+}
+
+.dark {
   --background: #111;
   --foreground: #d1d5db;
 }
@@ -14,6 +19,15 @@ body {
 
 .shiki,
 .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
   font-style: var(--shiki-dark-font-style) !important;
@@ -38,11 +52,11 @@ body {
 }
 
 .prose pre {
-  @apply overflow-x-auto border border-neutral-800 bg-[#111] my-4 rounded-none;
+  @apply overflow-x-auto border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-[#111] text-indigo-800 dark:text-indigo-200 my-4 rounded-none;
 }
 
 .prose code:not(pre code) {
-  @apply px-1 py-0.5 text-sm border border-gray-700 rounded text-gray-200;
+  @apply px-1 py-0.5 text-sm border border-neutral-300 dark:border-gray-700 rounded text-neutral-800 dark:text-gray-200 bg-neutral-100 dark:bg-transparent;
 }
 
 .prose code:not(pre code)::before,
@@ -57,5 +71,5 @@ body {
 }
 
 .prose code span {
-  @apply font-medium text-gray-200;
+  @apply font-medium text-neutral-800 dark:text-gray-200;
 }
