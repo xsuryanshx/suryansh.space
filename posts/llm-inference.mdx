@@ -2,10 +2,9 @@
 title: Scaling Transformer Inference
 description: A Deep Dive into Throughput, Latency, and Memory Optimization via K-V Caching
 date: 2025-11-25
----
+--- 
 
 # Scaling Transformer Inference: A Deep Dive into Throughput, Latency, and Memory Optimization via K-V Caching
-
 
 Large Language Models (LLMs) have shifted from a research novelty to a cornerstone of modern computing infrastructure. However, the autoregressive nature of these models presents significant challenges in inference, particularly regarding memory bandwidth and latency. This essay summarizes the technical background of Transformer inference, identifying the dichotomy between the compute-bound "prefill" phase and the memory-bound "decode" phase. It explores the bottleneck of Key-Value (KV) caching and analyzes novel solutions such as PagedAttention (vLLM) and Activation-Aware Quantization (AWQ) that mitigate these issues. Finally, it discusses personal findings regarding the convergence of systems engineering and ML, proposing future research directions in hardware-aware memory management.
 
@@ -210,7 +209,7 @@ def dequantize(weights_int8, scale):
 
 ```
 
-[Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
+To learn more - [Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
 
 ### **Conceptualizing Accuracy Preservation (AWQ)**
 
@@ -230,13 +229,12 @@ This creates a "Leaky Abstraction." Ideally, an ML engineer shouldn't need to kn
 
 ## **5. Future Directions and Next Steps**
 
-Based on this review, the path forward for Transformer inference involves three key areas of research and application:
+Based on this review, the path forward for Transformer inference involves few key areas of research and application:
 
 1. **Speculative Decoding:**
     - *Concept:* In many sentences, the next word is obvious (e.g., "New York [City]"). Using a massive 70B model to predict "City" is a waste. Speculative Decoding uses a tiny, fast "Draft Model" to generate 5-10 tokens cheaply, and then the large "Target Model" verifies them all in a single parallel step.
     - *Next Step:* I plan to benchmark how PagedAttention integrates with Speculative Decoding. Since speculative decoding requires managing multiple "potential" future sequences (a tree of possibilities), the flexible memory management of vLLM should theoretically provide massive gains here.
-    
-    [Faster LLMs: Accelerate Inference with Speculative Decoding](https://www.youtube.com/watch?v=VkWlLSTdHs8)
+    - To learn more - [Faster LLMs: Accelerate Inference with Speculative Decoding](https://www.youtube.com/watch?v=VkWlLSTdHs8)
     
 2. **Long-Context Optimization (Ring Attention):**
     - *Concept:* As context windows grow to 1M+ tokens (e.g., Gemini 1.5), even PagedAttention struggles with the sheer volume of KV cache. Ring Attention distributes the KV cache across multiple GPUs in a ring topology, allowing the context to be larger than the memory of any single card.
