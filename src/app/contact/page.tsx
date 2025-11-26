@@ -60,7 +60,7 @@ export default function ContactPage() {
     try {
       // Replace YOUR_FORM_ID with your actual Formspree form ID
       // Sign up at https://formspree.io to get one
-      const response = await fetch("https://formspree.io/f/mgvbgvyo", {
+      const response = await fetch("https://formspree.io/f/xblendkj", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
