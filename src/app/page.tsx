@@ -8,7 +8,7 @@ const workItems: Item[] = [
     role: "principal ai engineer",
     period: "mar 2024 - sept 2025",
     description:
-      "Backend for ToyotaGPT (ChatGPT equivalent) serving 74,000+ daily users and developed scalable Agentic RAG pipelines processing over TBs of enterprise data.",
+      "Led backend developments for ToyotaGPT (ChatGPT equivalent) serving 74,000+ daily users and developed scalable Agentic RAG pipelines processing TBs of enterprise data.",
     href: "https://ascentt.com",
   },
   {
@@ -16,7 +16,7 @@ const workItems: Item[] = [
     role: "founding engineer",
     period: "aug 2024 - dec 2024",
     description:
-      "Engineered core AI backend features, including GenAI visuals and automated menu digitization, driving rapid platform scale to 100+ daily orders within the first month.",
+      "AI-powered QR Menu SaaS for the F&B sector. Engineered core AI backend features, including image generation pipelines and automated menu digitization. Integrated with restaurants in Bangalore, Jaipur, and Indore.",
     href: "https://taptable.club",
   },
   {
