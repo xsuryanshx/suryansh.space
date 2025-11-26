@@ -19,7 +19,7 @@ export function ScrambleText({
   scramble?: number
   seed?: number
 }) {
-  const { ref } = useScramble({
+  const { ref, replay } = useScramble({
     text,
     speed,
     tick,
@@ -29,5 +29,11 @@ export function ScrambleText({
     overdrive: true,
   })
 
-  return <span ref={ref} className={className} />
+  return (
+    <span
+      ref={ref}
+      className={className}
+      onMouseEnter={() => replay()}
+    />
+  )
 }

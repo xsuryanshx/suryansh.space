@@ -18,7 +18,7 @@ export function Header() {
     <header className="mb-16 space-y-6">
       <div className="space-y-4">
         <h1 className="text-4xl font-bold animate-fade-in text-neutral-900 dark:text-white">
-          <span className="inline-block">
+          <span className="inline-block hover:text-accent transition-colors cursor-default">
             <ScrambleText text="suryansh singh rawat" />
           </span>
         </h1>
