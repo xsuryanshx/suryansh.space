@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { MDX } from "./mdx"
-import { getPostBySlug } from "@/lib/blog"
+import { getPostBySlug, getHeadings } from "@/lib/blog"
+import { TableOfContents } from "@/components/table-of-contents"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -48,8 +49,11 @@ export default async function Post({ params }: PageProps) {
     notFound()
   }
 
+  const headings = getHeadings(post.content)
+
   return (
-    <section className="animate-fade-in-up">
+    <section className="animate-fade-in-up relative">
+      <TableOfContents headings={headings} />
       <script
         type="application/ld+json"
         suppressHydrationWarning

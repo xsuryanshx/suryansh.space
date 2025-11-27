@@ -67,7 +67,7 @@ In the self-attention mechanism, the model computes three vectors for every toke
 
 When generating the next token, the Keys and Values for previous tokens do not change. Re-computing them is wasteful. Therefore, we cache these vectors in the GPU's High-Bandwidth Memory (VRAM).
 
-### Implementation View
+#### Implementation View
 
 Here is how the logic changes with a KV Cache. We only compute the query for the *current* token, and append the new keys/values to our growing cache.
 
@@ -118,7 +118,7 @@ Findings indicate that in these legacy systems, **20% to 80% of GPU memory was w
 
 The most novel idea introduced in recent literature is **PagedAttention**, popularized by the vLLM library developed by researchers at UC Berkeley (Kwon et al., 2023).
 
-### Conceptualizing PagedAttention
+#### Conceptualizing PagedAttention
 
 Kwon et al. recognized that this was exactly the same problem Operating Systems faced in the 1960s regarding RAM usage. The solution then was **Virtual Memory Paging**. PagedAttention applies this to LLMs. Instead of demanding a contiguous block of physical memory, it divides the KV cache into fixed-size "blocks" (e.g., 16 tokens).
 
@@ -211,7 +211,7 @@ def dequantize(weights_int8, scale):
 
 To learn more - [Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
 
-### **Conceptualizing Accuracy Preservation (AWQ)**
+#### Conceptualizing Accuracy Preservation (AWQ)
 
 A common concern is that "rounding down" numbers will make the model "dumber." Naive quantization (simply rounding every number) does indeed hurt performance. However, newer methods like **Activation-Aware Weight Quantization (AWQ)** use a smarter approach.
 
@@ -227,7 +227,7 @@ The realization that the bottleneck for AI is no longer "compute" (FLOPS) but "m
 
 This creates a "Leaky Abstraction." Ideally, an ML engineer shouldn't need to know how GPU memory paging works. However, to deploy efficient systems today, one must understand the hardware deeply. I am particularly interested in the trade-off between **Post-Training Quantization (PTQ)** and **throughput**. While PTQ reduces memory, decoding compressed weights on the fly adds computational overhead. The balance between compute-bound and memory-bound operations is delicate and varies across hardware generations (e.g., NVIDIA A100 vs. H100).
 
-## **5. Future Directions and Next Steps**
+## 5. Future Directions and Next Steps
 
 Based on this review, the path forward for Transformer inference involves few key areas of research and application:
 
@@ -246,7 +246,7 @@ The deployment of Large Language Models is a multi-faceted challenge where algor
 
 Optimizing inference is not merely about cost-cutting; it is the enabling factor that determines whether an AI model can be a real-time assistant or just a batched offline process. As models continue to scale, the "software" of memory management will arguably become just as critical as the "hardware" of the GPUs themselves.
 
-## **7. References**
+## 7. References
 
 [1] Kwon, W., et al. (2023). "Efficient Memory Management for Large Language Model Serving with PagedAttention." SOSP.
 

@@ -24,6 +24,38 @@ export function getPostBySlug(slug: string): MDXFileData | null {
   return getPosts().find((post) => post.slug === slug) ?? null
 }
 
+export function slugify(str: string) {
+  return str
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/&/g, "-and-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+}
+
+export function getHeadings(content: string) {
+  // Remove code blocks to avoid matching comments as headings
+  const codeBlockRegex = /```[\s\S]*?```/gm
+  const contentWithoutCodeBlocks = content.replace(codeBlockRegex, "")
+
+  // Match headings with 1-3 hashes
+  const regex = /^(#{1,3})\s+(.+)$/gm
+  const headings = []
+  let match
+
+  while ((match = regex.exec(contentWithoutCodeBlocks)) !== null) {
+    headings.push({
+      level: match[1].length,
+      text: match[2],
+      slug: slugify(match[2]),
+    })
+  }
+
+  return headings
+}
+
 function parseFrontmatter(fileContent: string): FrontmatterParseResult {
   const frontmatterRegex = /---\s*([\s\S]*?)\s*---/
   const match = frontmatterRegex.exec(fileContent)
