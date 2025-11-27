@@ -37,18 +37,6 @@ export async function GET(request: Request) {
           position: "relative",
         }}
       >
-        <img
-          src="https://www.suryansh.space/suryansh.jpg"
-          style={{
-            position: "absolute",
-            bottom: "40px",
-            right: "40px",
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-          }}
-        />
-
         <div
           style={{
             display: "flex",

@@ -22,7 +22,7 @@ async function loadGoogleFont(font: string, text: string) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const title = searchParams.get("title")
-  const text = title ? `snare • ${title}` : "snare • home"
+  const text = title ? `suryansh • ${title}` : "suryansh • home"
 
   return new ImageResponse(
     (
@@ -40,18 +40,6 @@ export async function GET(request: Request) {
           position: "relative",
         }}
       >
-        <img
-          src="https://www.suryansh.space/suryansh.jpg"
-          style={{
-            position: "absolute",
-            bottom: "40px",
-            right: "40px",
-            width: "80px",
-            height: "80px",
-            borderRadius: "50%",
-          }}
-        />
-
         <div
           style={{
             display: "flex",
