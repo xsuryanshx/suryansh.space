@@ -1,7 +1,18 @@
+// mdx.tsx
+
 import { MDXRemote } from "next-mdx-remote/rsc"
 import Link from "next/link"
 import { Children, createElement, isValidElement } from "react"
 import { codeToHtml } from "shiki"
+
+// --- Math Rendering ---
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
+import "katex/dist/katex.min.css"
+
+// --------------------------------------------
+// Custom Components
+// --------------------------------------------
 
 function Table({ data }: { data: { headers: string[]; rows: string[][] } }) {
   let headers = data.headers.map((header, index) => (
@@ -52,11 +63,13 @@ function CustomImage(props: React.ImgHTMLAttributes<HTMLImageElement>) {
   return <img alt={props.alt} className="rounded-lg" {...props} />
 }
 
+// --------------------------------------------
+// Syntax Highlighting <pre>
+// --------------------------------------------
 async function Pre({
   children,
   ...props
 }: React.HtmlHTMLAttributes<HTMLPreElement>) {
-  // Extract className from the children code tag
   const codeElement = Children.toArray(children).find(
     (child) => isValidElement(child) && child.type === "code",
   ) as React.ReactElement<HTMLPreElement> | undefined
@@ -88,19 +101,21 @@ async function Pre({
     }
   }
 
-  // If not, return the component as is
   return <pre {...props}>{children}</pre>
 }
 
+// --------------------------------------------
+// Auto-slug Headings
+// --------------------------------------------
 function slugify(str: string) {
   return str
     .toString()
     .toLowerCase()
-    .trim() // Remove whitespace from both ends of a string
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/&/g, "-and-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
 }
 
 function createHeading(level: number) {
@@ -123,24 +138,37 @@ function createHeading(level: number) {
   return HeadingComponent
 }
 
+// --------------------------------------------
+// MDX Components Map
+// --------------------------------------------
 const components = {
   a: CustomLink,
   img: CustomImage,
+  pre: Pre,
+  Table,
   h1: createHeading(1),
   h2: createHeading(2),
   h3: createHeading(3),
   h4: createHeading(4),
   h5: createHeading(5),
   h6: createHeading(6),
-  pre: Pre,
-  Table,
 }
 
+// --------------------------------------------
+// MAIN EXPORT — MDX RENDERER
+// --------------------------------------------
 export function MDX(props: any) {
   return (
     <MDXRemote
       {...props}
       components={{ ...components, ...(props.components ?? {}) }}
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [rehypeKatex],
+          format: "mdx",
+        },
+      }}
     />
   )
 }

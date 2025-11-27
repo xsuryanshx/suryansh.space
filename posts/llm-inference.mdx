@@ -63,7 +63,9 @@ Optimizations like KV Caching primarily target the **Decode Phase**.
 
 In the self-attention mechanism, the model computes three vectors for every token: a **Query (Q)**, a **Key (K)**, and a **Value (V)**. The attention score is derived from the dot product of the Query with the Keys, which is then used to weight the Values.
 
-**Attention(Q, K, V) = softmax(QK^T / √d_k) × V**
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$
 
 When generating the next token, the Keys and Values for previous tokens do not change. Re-computing them is wasteful. Therefore, we cache these vectors in the GPU's High-Bandwidth Memory (VRAM).
 
