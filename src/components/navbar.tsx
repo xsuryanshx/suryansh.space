@@ -40,31 +40,31 @@ export function Navbar() {
 
   return (
     <nav className="flex items-center justify-between mb-12 text-sm">
-      <div className="flex space-x-4">
+      <div className="flex gap-2 sm:gap-4">
         <Link
           href="/"
           className="hover:text-accent transition-colors duration-200"
         >
-          [h] home
+          <span className="hidden sm:inline">[h] </span>home
         </Link>
         <Link
           href="/blog"
           prefetch={true}
           className="hover:text-accent transition-colors duration-200"
         >
-          [b] blog
+          <span className="hidden sm:inline">[b] </span>blog
         </Link>
         <Link
           href="/projects"
           className="hover:text-accent transition-colors duration-200"
         >
-          [p] projects
+          <span className="hidden sm:inline">[p] </span>projects
         </Link>
         <Link
           href="/contact"
           className="hover:text-accent transition-colors duration-200"
         >
-          [c] contact
+          <span className="hidden sm:inline">[c] </span>contact
         </Link>
       </div>
       <ThemeToggle />
