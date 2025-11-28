@@ -42,17 +42,17 @@ const projectItems: Item[] = [
     title: "openprobe",
     role: "creator",
     description:
-      "an open-source deep research agent using python, langchain, and langgraph. designed to outperform existing search and research systems through advanced multi-hop reasoning capabilities.",
+      "an open-source deep research agent to answer complex queries that works with any LLM. designed to outperform existing deep research systems for solving advanced multi-hop reasoning queries.",
     href: "https://github.com/Open-Probe/Open-Probe",
   },
 
-  {
-    title: "detecting gan generated deepfake images",
-    role: "creator",
-    description:
-      "researched custom cnn architecture for deepfake detection, achieving 97.77% accuracy on the stylegan dataset using python, tensorflow, and deep learning.",
-    href: "https://github.com/xsuryanshx/Detecting-GAN-Generated-DeepFake-Images",
-  },
+  // {
+  //   title: "detecting gan generated deepfake images",
+  //   role: "creator",
+  //   description:
+  //     "researched custom cnn architecture for deepfake detection, achieving 97.77% accuracy on the stylegan dataset using python, tensorflow, and deep learning.",
+  //   href: "https://github.com/xsuryanshx/Detecting-GAN-Generated-DeepFake-Images",
+  // },
 ]
 
 export default function HomePage() {
@@ -127,6 +127,17 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <footer className="flex items-center justify-between text-sm text-neutral-500 dark:text-gray-500 animate-fade-in-up">
+        <p>© {new Date().getFullYear()} suryansh singh rawat</p>
+        <a
+          href="/suryansh_resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-accent dark:hover:text-accent transition-colors"
+        >
+          view resume
+        </a>
+      </footer>
     </>
   )
 }

@@ -111,9 +111,7 @@ export default function ProjectsPage() {
       </h1>
 
       <p className="text-neutral-600 dark:text-gray-400 mb-12 leading-relaxed">
-        here are some of the projects i&apos;ve worked on. i focus on building
-        ai systems and products that push the
-        boundaries of what&apos;s possible.
+        here are some of the projects i&apos;ve worked on.
       </p>
 
       <div className="space-y-12">
