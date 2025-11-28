@@ -22,11 +22,12 @@ const projects = [
       "gemini api"
     ],
     href: "https://github.com/Open-Probe/Open-Probe",
+    // image: "/projects/openprobe.png", // Add your project screenshots to public/projects/
   },
   {
     title: "PersonaAI",
     description:
-      "Generate A/B variants for running digital campaigns with million ai generated personas.",
+      "Build and test A/B digital campaigns using millions of AI-generated personas. PersonaAI automates persona creation and variant generation to help marketers maximize engagement and conversion.",
     role: "creator",
     period: "Oct 2025",
     achievements: [
@@ -98,7 +99,7 @@ const projects = [
       "C++",
       "R",
     ],
-    href: "https://github.com/xsuryanshx/Recommender-System",
+    href: "https://github.com/jaideep777/Plant-FATE",
   }
 ]
 
