@@ -135,7 +135,7 @@ export default function HomePage() {
           rel="noopener noreferrer"
           className="hover:text-accent dark:hover:text-accent transition-colors"
         >
-          view resume
+          <span className="hidden sm:inline">[r] </span>view resume
         </a>
       </footer>
     </>

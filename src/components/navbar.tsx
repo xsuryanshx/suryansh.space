@@ -37,6 +37,9 @@ export function Navbar() {
         case "c":
           router.push("/contact")
           break
+        case "r":
+          window.open("/suryansh_resume.pdf", "_blank")
+          break
       }
     }
 
