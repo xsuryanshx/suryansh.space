@@ -3,14 +3,14 @@ title: Scaling Transformer Inference
 description: A Deep Dive into Throughput, Latency, and Memory Optimization via K-V Caching
 date: 2025-11-25
 --- 
-
+## Abstract
 We’ve seen a major shift in the last few years: the release of ChatGPT largely settled the question of *“Can we build large models?”* Now, the focus has shifted to a far more practical (and often painful) question: *“Can we run them efficiently?”*
 
 LLMs are good enough now. Research has matured over the last few years. Production systems are no longer prototypes; they’re high-traffic services answering millions of queries. 
 
-I’ve always been fascinated by how LLMs actually compute things. I knew the theory, the napkin math of the huge matrix multiplications, the insane amount of compute (theoretically) but I could never fully picture what was happening in practice. Imagine trillions of operations streaming through racks of accelerators, KV stores being looked up and updated, memory being paged in and out, and quantized tensors packing more compute into less silicon—all happening in the few hundred milliseconds between a user pressing Enter and the model answering. (Full disclosure: an LLM helped me polish this very paragraph - the irony indeed). Makes me want to answer the question better. 
+I’ve always been fascinated by how LLMs actually compute things. I knew the theory, the napkin math of the huge matrix multiplications, the insane amount of compute (theoretically) but I could never fully picture what was happening in practice. Imagine trillions of operations streaming through racks of accelerators, KV stores being looked up and updated, memory being paged in and out, and quantized tensors packing more compute into less silicon, all happening in the few hundred milliseconds between a user pressing Enter and the model answering. Makes me want to understand and answer the following question better. 
 
-<u>***How is inference this fast ?!?***</u>
+<u>***How is inference THIS fast ?!?***</u>
 
 So I went down the rabbit hole and documented what I learned, in the hope that it helps someone else avoid the same struggle.
 
@@ -172,7 +172,10 @@ block_table = {
 
 ### 3.3 Quantization: Solving the Memory Wall
 
-Parallel to better memory management is the compression of the data itself. My review shows a significant shift from FP16 (16-bit floating point) to INT8 and even INT4 (4-bit integer) precision.
+Parallel to better memory management is the compression of the data itself. Solving fragmentation is only half the battle; the other half is reducing the sheer volume of data we need to move. This necessity has driven a rapid migration from traditional FP16 (16-bit floating point) weights to highly compressed INT8 and INT4 (4-bit integer) formats.
+
+##### To learn more - [Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
+
 
 #### 3.3.1 The "Memory Wall" Bottleneck: Arithmetic Intensity
 
@@ -230,8 +233,6 @@ def dequantize(weights_int8, scale):
     return weights_int8 / scale
 
 ```
-
-To learn more - [Quantizing LLMs - How & Why (8-Bit, 4-Bit, GGUF & More)](https://www.youtube.com/watch?v=3EDI4akymhA&t=722s)
 
 #### Conceptualizing Accuracy Preservation (AWQ)
 
