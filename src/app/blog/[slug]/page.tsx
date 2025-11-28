@@ -77,14 +77,22 @@ export default async function Post({ params }: PageProps) {
         }}
       />
 
-      <h1 className="text-4xl font-bold mb-4 text-neutral-900 dark:text-white">
-        <span className="text-accent mr-2">*</span>
-        {post.metadata.title}
-      </h1>
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold mb-3 text-neutral-900 dark:text-white">
+          <span className="text-accent mr-2">*</span>
+          {post.metadata.title}
+        </h1>
 
-      <div className="mb-8 flex items-center justify-between text-sm text-neutral-600 dark:text-gray-400">
-        <span>{formatDate(post.metadata.date)}</span>
-      </div>
+        {post.metadata.description && (
+          <p className="text-lg italic text-neutral-600 dark:text-gray-400 mb-4 leading-relaxed">
+            {post.metadata.description}
+          </p>
+        )}
+
+        <div className="flex items-center justify-between text-sm text-neutral-600 dark:text-gray-400">
+          <span>{formatDate(post.metadata.date)}</span>
+        </div>
+      </header>
 
       <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:text-neutral-900 dark:prose-headings:text-white prose-a:text-accent dark:prose-a:text-white hover:prose-a:underline prose-p:text-neutral-700 dark:prose-p:text-gray-300 prose-strong:text-neutral-900 dark:prose-strong:text-white prose-li:text-neutral-700 dark:prose-li:text-gray-300">
         <MDX source={post.content} />

@@ -9,6 +9,12 @@ export function Navbar() {
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      // Don't trigger if modifier keys are pressed (Ctrl, Cmd, Alt, Shift)
+      // This allows browser shortcuts like Ctrl+C (copy) to work
+      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
+        return
+      }
+
       // Don't trigger if any input elements are focused or if event target is an input
       if (
         document.activeElement?.tagName === "INPUT" ||
