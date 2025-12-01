@@ -20,6 +20,7 @@ async function loadGoogleFont(font: string, text: string) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const title = searchParams.get("title") ?? "suryansh's blog"
+  const description = searchParams.get("description")
 
   return new ImageResponse(
     (
@@ -29,44 +30,68 @@ export async function GET(request: Request) {
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
+          alignItems: "flex-start", // Changed to flex-start for better text alignment
           justifyContent: "center",
           backgroundColor: "#111",
           fontFamily: "Geist Mono",
-          padding: "40px",
+          padding: "60px", // Increased padding
           position: "relative",
         }}
       >
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            maxWidth: "90%",
+            flexDirection: "column",
+            gap: "20px",
+            maxWidth: "100%",
           }}
         >
-          <span
+          <div
             style={{
-              color: "#ff6b35",
-              fontSize: 48,
-              flexShrink: 0,
+              display: "flex",
+              alignItems: "flex-start",
+              gap: "12px",
             }}
           >
-            *
-          </span>
-          <h1
-            style={{
-              fontSize: 48,
-              color: "#fff",
-              margin: 0,
-              lineHeight: 1.2,
-              wordBreak: "break-word",
-              overflowWrap: "break-word",
-              maxWidth: "100%",
-            }}
-          >
-            {title}
-          </h1>
+            <span
+              style={{
+                color: "#ff6b35",
+                fontSize: 64,
+                lineHeight: 1,
+                marginTop: -10, // Visual optical alignment
+              }}
+            >
+              *
+            </span>
+            <h1
+              style={{
+                fontSize: 64,
+                color: "#fff",
+                margin: 0,
+                lineHeight: 1.1,
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+                maxWidth: "100%",
+              }}
+            >
+              {title}
+            </h1>
+          </div>
+
+          {description && (
+            <p
+              style={{
+                fontSize: 32,
+                color: "#a3a3a3",
+                margin: "10px 0 0 0",
+                lineHeight: 1.5,
+                paddingLeft: "40px", // Align with title text (offsetting asterisk)
+                maxWidth: "90%",
+              }}
+            >
+              {description}
+            </p>
+          )}
         </div>
       </div>
     ),
@@ -76,7 +101,7 @@ export async function GET(request: Request) {
       fonts: [
         {
           name: "Geist Mono",
-          data: await loadGoogleFont("Geist Mono", title),
+          data: await loadGoogleFont("Geist Mono", title + (description || "")),
           style: "normal",
         },
       ],
