@@ -27,9 +27,7 @@ export async function generateMetadata({ params }: PageProps) {
       url: `https://suryansh.space/blog/${post.slug}`,
       images: [
         {
-          url: `https://suryansh.space/og/blog?title=${encodeURIComponent(
-            post.metadata.title
-          )}&description=${encodeURIComponent(post.metadata.description)}`,
+          url: `https://suryansh.space/og/blog?title=${post.metadata.title}`,
         },
       ],
     },
@@ -38,11 +36,7 @@ export async function generateMetadata({ params }: PageProps) {
       description: post.metadata.description,
       card: "summary_large_image",
       images: [
-        `https://suryansh.space/og/blog?title=${encodeURIComponent(
-          post.metadata.title
-        )}&description=${encodeURIComponent(
-          post.metadata.description
-        )}&top=${publishedTime}`,
+        `https://suryansh.space/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
       ],
     },
   }
@@ -71,11 +65,9 @@ export default async function Post({ params }: PageProps) {
             datePublished: post.metadata.date,
             dateModified: post.metadata.date,
             description: post.metadata.description,
-            image: `https://suryansh.space/og/blog?title=${encodeURIComponent(
+            image: `https://suryansh.space/og/blog?title=${
               post.metadata.title
-            )}&description=${encodeURIComponent(
-              post.metadata.description
-            )}&top=${formatDate(post.metadata.date)}`,
+            }&top=${formatDate(post.metadata.date)}`,
             url: `https://suryansh.space/blog/${post.slug}`,
             author: {
               "@type": "Person",

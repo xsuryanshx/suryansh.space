@@ -27,7 +27,6 @@ export function ProjectCard({
   image: manualImage,
 }: ProjectCardProps) {
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [previewDescription, setPreviewDescription] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(!manualImage)
   const [hasError, setHasError] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
@@ -46,11 +45,7 @@ export function ProjectCard({
         const data = await res.json()
         if (data.image) {
           setPreviewImage(data.image)
-        }
-        if (data.description) {
-          setPreviewDescription(data.description)
-        }
-        if (!data.image && !data.description) {
+        } else {
           setHasError(true)
         }
       } catch (error) {
@@ -90,22 +85,13 @@ export function ProjectCard({
             </div>
           ) : displayImage ? (
             <Link href={href} target="_blank" className="block h-full">
-              <div className="relative h-full w-full group/image">
-                <Image
-                  src={displayImage}
-                  alt={`${title} preview`}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  unoptimized
-                />
-                {previewDescription && (
-                  <div className="absolute inset-0 bg-black/70 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4 text-center">
-                    <p className="text-white text-xs line-clamp-4">
-                      {previewDescription}
-                    </p>
-                  </div>
-                )}
-              </div>
+              <Image
+                src={displayImage}
+                alt={`${title} preview`}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                unoptimized
+              />
             </Link>
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-400 gap-2 p-4 text-center">
