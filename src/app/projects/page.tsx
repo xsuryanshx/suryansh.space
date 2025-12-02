@@ -44,7 +44,7 @@ const projects = [
     href: "https://personai.lovable.app/",
   },
   {
-    title: "Cognitive-Load",
+    title: "KeyCognition",
     description:
       "Predicting cognitive load of users based on their behavior and interactions with their keyboard stroke data using machine learning models.",
     role: "team",
@@ -63,7 +63,7 @@ const projects = [
       "azure ml",
       "azure sql",
     ],
-    href: "https://github.com/xsuryanshx/Cognitive-Load",
+    href: "https://github.com/xsuryanshx/KeyCognition",
   },
   {
     title: "Detecting GAN Generated Deepfake Images",
