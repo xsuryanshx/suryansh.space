@@ -4,7 +4,7 @@ import { Metadata } from "next"
 
 const projects = [
   {
-    title: "openprobe",
+    title: "OpenProbe",
     description:
       "an open-source deep research agent using python, langchain, and langgraph. designed to outperform existing search and research systems through advanced multi-hop reasoning capabilities.",
     role: "creator",

@@ -39,7 +39,7 @@ const workItems: Item[] = [
 
 const projectItems: Item[] = [
   {
-    title: "openprobe",
+    title: "OpenProbe",
     role: "creator",
     description:
       "an open-source deep research agent to answer complex queries that works with any LLM. designed to outperform existing deep research systems for solving advanced multi-hop reasoning queries.",
