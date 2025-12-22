@@ -75,6 +75,14 @@ export function Navbar() {
         >
           <span className="hidden sm:inline">[c] </span>contact
         </Link>
+        <Link
+          href="/suryansh_resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-accent transition-colors duration-200"
+        >
+          <span className="hidden sm:inline">[r] </span>resume
+        </Link>
       </div>
       <ThemeToggle />
     </nav>

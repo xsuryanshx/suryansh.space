@@ -24,8 +24,8 @@ const workItems: Item[] = [
     role: "data scientist - ai center of excellence",
     period: "july 2022 - mar 2024",
     description:
-      "Collaborated on cybersecurity NLP research to engineer autoencoder-based zero-day threat detection and ensemble classification models for multi-document automation pipelines.",
-    href: "https://www2.deloitte.com",
+      "As a part of Deloitte's AI and cybersecurity research lab, built deep learning anomaly detection models for zero-day cyber threats, document intelligence models, and automated cyber threat reporting.",
+    href: "https://www.deloitte.com/in/en/about/press-room/deloitte-unveils-global-ai-simulation-centre-of-excellence.html",
   },
   {
     title: "scienaptic ai",
@@ -129,14 +129,6 @@ export default function HomePage() {
       </section>
       <footer className="flex items-center justify-between text-sm text-neutral-500 dark:text-gray-500 animate-fade-in-up">
         <p>© {new Date().getFullYear()} suryansh singh rawat</p>
-        <a
-          href="/suryansh_resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-accent dark:hover:text-accent transition-colors"
-        >
-          <span className="hidden sm:inline">[r] </span>view resume
-        </a>
       </footer>
     </>
   )
