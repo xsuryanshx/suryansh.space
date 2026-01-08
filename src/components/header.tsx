@@ -68,12 +68,12 @@ export function Header() {
         </div>
         <div className="flex items-center gap-2">
           <Building2 className="w-4 h-4" />
-          ai engineer/data scientist
+          ai/ml engineer
         </div>
       </div>
 
       <p className="leading-relaxed animate-fade-in-up">
-        I'm an ai engineer based in Seattle, currently pursuing my Master's in Data Science at the University of Washington. 
+        I'm an experienced ai/ml engineer based in Seattle, currently pursuing my Master's in Data Science at the University of Washington. 
         I'm a researcher and a high-agency builder by heart, I thrive on solving hard problems and I get things done. I love to build products focused around AI and ML. 
         Few topics which interest me are: AI Agents for Automation, LLM Inferencing and Optimizations, NLP, Deep Learning, Search and Retrieval.
         When I’m not coding, you’ll probably find me beatboxing, practicing calisthenics, trekking, or vibing to drum & bass.
