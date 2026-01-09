@@ -73,9 +73,8 @@ export function Header() {
       </div>
 
       <p className="leading-relaxed animate-fade-in-up">
-        I'm an experienced ai/ml engineer based in Seattle, currently pursuing my Master's in Data Science at the University of Washington. 
-        I'm a researcher and a high-agency builder by heart, I thrive on solving hard problems and I get things done. I love to build products focused around AI and ML. 
-        Few topics which interest me are: AI Agents for Automation, LLM Inferencing and Optimizations, NLP, Deep Learning, Search and Retrieval.
+        I'm an Experienced AI/ML Engineer based in Seattle, currently pursuing my Master's in Data Science at the University of Washington. 
+        I'm a researcher and a high-agency builder by heart, I thrive on solving hard problems and I get things done. I love to build products focused around AI Agents for Automation, LLM Inferencing and Optimizations, NLP, Deep Learning, Search and Retrieval.
         When I’m not coding, you’ll probably find me beatboxing, practicing calisthenics, trekking, or vibing to drum & bass.
       </p>
     </header>

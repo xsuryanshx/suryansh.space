@@ -4,6 +4,28 @@ import { Metadata } from "next"
 
 const projects = [
   {
+    title: "Ad-Astra",
+    description:
+      "Ad-Astra personalizes ads on X by learning a user’s interests and writing ads in their style, then estimating which ads are most likely to get clicks using Grok models.",
+    role: "xAI Hackathon Project",
+    period: "Dec 2025",
+    achievements: [
+      "Demoed this project at the xAI Hackathon 2025; selected for an all-expenses-paid presentation at xAI headquarters in Palo Alto.",
+      "Built an end-to-end system that analyzes X activity (posts, likes, bookmarks, timelines), creates persona-based ad variations, and scores them for click likelihood before delivery.",
+      "Built a residual attention model as a part of the pipeline that predicts when and where an ad should appear in-feed enabling higher CTRs."
+    ],
+    technologies: [
+      "Python",
+      "Grok models",
+      "xAI API",
+      "Supabase",
+      "Flask",
+      "React",
+      "Next.js"
+    ],
+    href: "https://github.com/thisishardik/xai-ad-intelligence-engine"
+  },
+  {
     title: "OpenProbe",
     description:
       "an open-source deep research agent using python, langchain, and langgraph. designed to outperform existing search and research systems through advanced multi-hop reasoning capabilities.",
@@ -47,7 +69,7 @@ const projects = [
     title: "KeyCognition",
     description:
       "Predicting cognitive load of users based on their behavior and interactions with their keyboard stroke data using machine learning models.",
-    role: "team",
+    role: "DataBricks Hackathon Project",
     period: "Nov 2025",
     achievements: [
       "Won 3rd place at the UW Databricks Hackathon, created this in 12 hours.",
