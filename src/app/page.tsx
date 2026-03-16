@@ -8,7 +8,7 @@ const workItems: Item[] = [
     role: "principal ai engineer",
     period: "mar 2024 - sept 2025",
     description:
-      "Led backend developments for ToyotaGPT (ChatGPT equivalent) serving 74,000+ daily users and developed scalable Agentic RAG pipelines processing TBs of enterprise data.",
+      "Led backend developments for ToyotaGPT (ChatGPT equivalent) serving 56,000+ daily users and developed scalable Agentic RAG pipelines processing TBs of enterprise data.",
     href: "https://ascentt.com",
   },
   {
