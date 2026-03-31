@@ -31,6 +31,13 @@ export const metadata: Metadata = {
     title: "Suryansh Singh Rawat",
     card: "summary_large_image",
   },
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+      "application/atom+xml": "/atom.xml",
+      "application/feed+json": "/feed.json",
+    },
+  },
 }
 
 export default function RootLayout({
