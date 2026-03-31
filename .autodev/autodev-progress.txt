@@ -1,0 +1,11 @@
+AutoDev Progress
+================
+Issue: Add a visible reading-progress bar on blog posts
+URL: https://github.com/xsuryanshx/suryansh.space/issues/2
+Status: PARSED
+
+Features:
+- feat-1: Reading progress bar component + integration [pending]
+
+Current Phase: Feature List Created
+Started: 2026-03-31

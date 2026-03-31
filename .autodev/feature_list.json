@@ -1,0 +1,30 @@
+{
+  "issue": {
+    "title": "Add a visible reading-progress bar on blog posts",
+    "url": "https://github.com/xsuryanshx/suryansh.space/issues/2",
+    "type": "feature"
+  },
+  "features": [
+    {
+      "id": "feat-1",
+      "slug": "reading-progress-bar",
+      "description": "Create a ReadingProgress client component that renders a fixed progress bar at the top of the viewport, scoped to scroll depth of the article body. Integrate it into the blog post page only. Must support dark/light theme, prefers-reduced-motion, and aria-hidden accessibility.",
+      "subtasks": [
+        {
+          "id": "task-1-1",
+          "description": "Create ReadingProgress client component with scroll listener scoped to article container, using accent color from Tailwind config, with prefers-reduced-motion support and aria-hidden",
+          "files": ["src/components/reading-progress.tsx"],
+          "status": "pending"
+        },
+        {
+          "id": "task-1-2",
+          "description": "Integrate ReadingProgress component into blog post page (src/app/blog/[slug]/page.tsx), positioned below navbar",
+          "files": ["src/app/blog/[slug]/page.tsx"],
+          "status": "pending"
+        }
+      ],
+      "status": "pending"
+    }
+  ],
+  "created_at": "2026-03-31T00:00:00Z"
+}
