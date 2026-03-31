@@ -39,6 +39,9 @@ export async function generateMetadata({ params }: PageProps) {
         `https://suryansh.space/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
       ],
     },
+    alternates: {
+      canonical: `https://suryansh.space/blog/${post.slug}`,
+    },
   }
 }
 
