@@ -9,6 +9,34 @@ type PostsProps = {
   posts: MDXFileData[]
 }
 
+/**
+ * Strip MDX/JSX syntax from content so that plain-text matching works
+ * correctly without noisy angle-bracket tags, frontmatter, or code fences.
+ */
+function stripMdx(content: string): string {
+  return (
+    content
+      // Remove frontmatter block
+      .replace(/^---[\s\S]*?---/m, "")
+      // Remove fenced code blocks (``` ... ```)
+      .replace(/```[\s\S]*?```/g, " ")
+      // Remove inline code (`...`)
+      .replace(/`[^`]*`/g, " ")
+      // Remove JSX / HTML tags  (<Component ... />  or  <div> ... </div>)
+      .replace(/<[^>]+>/g, " ")
+      // Remove markdown link syntax but keep the label text
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+      // Remove markdown image syntax
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+      // Remove heading hashes, bold/italic markers
+      .replace(/#{1,6}\s/g, "")
+      .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, "$1")
+      // Collapse extra whitespace
+      .replace(/\s+/g, " ")
+      .trim()
+  )
+}
+
 export function Posts({ posts }: PostsProps) {
   const [isSearching, setIsSearching] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -16,9 +44,19 @@ export function Posts({ posts }: PostsProps) {
   const router = useRouter()
   const selectedItemRef = useRef<HTMLDivElement>(null)
 
-  const filteredPosts = posts.filter((item) =>
-    item.metadata.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  const query = searchQuery.toLowerCase()
+
+  const filteredPosts = posts.filter((item) => {
+    if (!query) return true
+    const title = item.metadata.title.toLowerCase()
+    const description = (item.metadata.description ?? "").toLowerCase()
+    const content = stripMdx(item.content).toLowerCase()
+    return (
+      title.includes(query) ||
+      description.includes(query) ||
+      content.includes(query)
+    )
+  })
 
   useEffect(() => {
     setSelectedIndex(0)
@@ -74,6 +112,9 @@ export function Posts({ posts }: PostsProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isSearching, filteredPosts, selectedIndex, router])
 
+  const showHint = isSearching && searchQuery === ""
+  const showNoResults = isSearching && searchQuery !== "" && filteredPosts.length === 0
+
   return (
     <>
       {isSearching && (
@@ -101,13 +142,26 @@ export function Posts({ posts }: PostsProps) {
         </div>
       )}
 
-      <div className="space-y-8 sm:space-y-4">
+      <div id="search-results" className="space-y-8 sm:space-y-4" role="list" aria-label="Blog posts">
+        {showHint && (
+          <p className="text-sm text-neutral-500 dark:text-gray-500 text-center py-4" aria-live="polite">
+            Type to search across all posts...
+          </p>
+        )}
+
+        {showNoResults && (
+          <p className="text-sm text-neutral-500 dark:text-gray-500 text-center py-4" aria-live="polite">
+            No posts found for &apos;{searchQuery}&apos;
+          </p>
+        )}
+
         {filteredPosts.map((item, index) => (
           <div
             key={item.slug}
             ref={
               isSearching && index === selectedIndex ? selectedItemRef : null
             }
+            role="listitem"
           >
             <PostItem
               post={item}
