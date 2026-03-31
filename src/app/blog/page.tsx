@@ -55,4 +55,7 @@ export const metadata: Metadata = {
       },
     ],
   },
+  alternates: {
+    canonical: "https://suryansh.space/blog",
+  },
 }
