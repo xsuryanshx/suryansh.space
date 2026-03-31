@@ -11,6 +11,15 @@ type Heading = {
 
 export function TableOfContents({ headings }: { headings: Heading[] }) {
   const [activeId, setActiveId] = useState<string>("")
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -42,7 +51,7 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
       </div>
 
       {/* Panel */}
-      <div className="w-0 overflow-hidden group-hover:w-72 transition-all duration-300 ease-in-out bg-neutral-50 dark:bg-[#111] border-y border-l border-neutral-200 dark:border-neutral-800 rounded-bl-lg shadow-lg max-h-[70vh] overflow-y-auto">
+      <div className="w-0 overflow-hidden group-hover:w-72 transition-all duration-300 ease-in-out motion-reduce:transition-none bg-neutral-50 dark:bg-[#111] border-y border-l border-neutral-200 dark:border-neutral-800 rounded-bl-lg shadow-lg max-h-[70vh] overflow-y-auto">
         <div className="p-5 min-w-[18rem]">
           <h4 className="text-xs font-bold mb-4 text-neutral-900 dark:text-white uppercase tracking-widest">
             On this page
@@ -63,7 +72,7 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
                   onClick={(e) => {
                     e.preventDefault()
                     document.getElementById(heading.slug)?.scrollIntoView({
-                      behavior: "smooth",
+                      behavior: prefersReducedMotion ? "auto" : "smooth",
                     })
                   }}
                 >
