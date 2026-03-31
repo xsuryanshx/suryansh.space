@@ -1,11 +1,14 @@
 AutoDev Progress
 ================
-Issue: Add a visible reading-progress bar on blog posts
-URL: https://github.com/xsuryanshx/suryansh.space/issues/2
+Issue: Improve blog discovery, syndication, SEO, and post reading UX
+URL: https://github.com/xsuryanshx/suryansh.space/issues/3
 Status: PARSED
 
 Features:
-- feat-1: Reading progress bar component + integration [pending]
+- feat-1: full-text-search [pending]
+- feat-2: syndication-feeds [pending]
+- feat-3: seo-structured-data [pending]
+- feat-4: reading-ux-improvements [pending]
 
 Current Phase: Feature List Created
 Started: 2026-03-31
