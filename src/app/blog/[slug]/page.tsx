@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { MDX } from "./mdx"
 import { getPostBySlug, getHeadings } from "@/lib/blog"
 import { TableOfContents } from "@/components/table-of-contents"
+import { ReadingProgress } from "@/components/reading-progress"
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -52,7 +53,9 @@ export default async function Post({ params }: PageProps) {
   const headings = getHeadings(post.content)
 
   return (
-    <section className="animate-fade-in-up relative">
+    <>
+      <ReadingProgress />
+      <section className="animate-fade-in-up relative">
       <TableOfContents headings={headings} />
       <script
         type="application/ld+json"
@@ -98,6 +101,7 @@ export default async function Post({ params }: PageProps) {
         <MDX source={post.content} />
       </article>
     </section>
+    </>
   )
 }
 
