@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { Item, SectionList } from "@/components/section-list"
 import { BlogSection } from "@/components/blog-section"
+import { Metadata } from "next"
 
 const workItems: Item[] = [
   {
@@ -54,6 +55,19 @@ const projectItems: Item[] = [
   //   href: "https://github.com/xsuryanshx/Detecting-GAN-Generated-DeepFake-Images",
   // },
 ]
+
+export const metadata: Metadata = {
+  openGraph: {
+    images: [
+      {
+        url: "https://suryansh.space/home-og.png",
+      },
+    ],
+  },
+  twitter: {
+    images: ["https://suryansh.space/home-og.png"],
+  },
+}
 
 export default function HomePage() {
   return (
